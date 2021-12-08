@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da velha</title>
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+    <body>
+        <div id="formJogador">
+            <div>
+                <form action="" name="formulario">
+                    <div>
+                        <div>
+                            <label for="nome">Nickname</label>
+                            <input type="text" name="nome" id="nome"/>
+                        </div>    
+                        <div>
+                            <label>Tipo de peça</label>
+                            <div>
+                                <img src="img/icon-x.png" width="20">
+                                <input type="radio" name="tipo_peca" id="tipo_peca" value="1" checked/>
+                                <img src="img/icon-o.png" width="20">
+                                <input type="radio" name="tipo_peca" id="tipo_peca" value="2"/>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" id="botao_iniciar" onClick="iniciarJogo()">Iniciar Jogo</button>
+                </form>
+            </div>    
+        </div>    
+        <div id="divJogo">
+            <div>
+                <span id="label"></span>
+                <div id="jogo"></div>
+                <div>
+                    <h1 id="labelResultado"></h1>
+                    <h3 id="labelJogadorResultado"></h3>
+                    <button type="button" onclick="reiniciarJogo()">Jogar novamente</button>
+                </div>
+            </div>
+        </div>
+        <script src="js/model.js"></script>
+        <script src="js/utils.js"></script>
+    </body>
+</html>
