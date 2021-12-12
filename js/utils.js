@@ -1,12 +1,9 @@
 
-const IA_NOMES = ['Jarvis','Friday','R2D2','Ultron']
-
-var controller;
-
-document.getElementById('formJogador').style.display = 'flex';
-document.getElementById('divJogo').style.display = 'none';
+var controller
+var isJogoIniciado = false
 
 function iniciarTabuleiro(){
+    controller = new Controller();
     let elememt_jogo = document.getElementById('jogo')
     if(document.getElementById('tabuleiro') !== null){
         document.getElementById('tabuleiro').remove()
@@ -36,75 +33,84 @@ function inserirLinhaTabuleiro(element_tabuleiro, linha){
 function inserirItemTabuleiro(element_linha, item){
     let element_item = document.createElement('td')
     element_item.setAttribute('id', item.getId)
-    element_item.setAttribute('style', 'border:1px solid black;')
-    element_item.setAttribute('width', '70')
-    element_item.setAttribute('height', '70')
     element_item.setAttribute('onclick', 'itemSelecionado(this)')
     element_linha.appendChild(element_item)
 }
 
 
 function iniciarJogo(){
-    controller = new Controller();
-    let form = document.formulario
-    let jogador_um = new Jogador(form.nome.value, parseInt(form.tipo_peca.value), true, 1)
-    let jogador_dois = new Jogador(getIAJogo(), (parseInt(form.tipo_peca.value) == 1 ? 2 : 1), false, 2)
-    controller.setJogadores = [jogador_um, jogador_dois]
-    iniciarTabuleiro()
-    setLabelJogador()
+    if(!isJogoIniciado){
+        let form = document.formulario
+        let jogador_um 
+        let jogador_dois
+        let isHumanoIniciaJogo = (parseInt(form.tipo_peca.value) == 1 ? true : false)
 
-    document.getElementById('formJogador').style.display = 'none';
-    document.getElementById('divJogo').style.display = 'flex';
-}
+        isJogoIniciado = true
 
-function getIAJogo(){
-    let min = 0
-    let max = IA_NOMES.length - 1;
-    return IA_NOMES[Math.floor(Math.random() * (max - min + 1)) + min];
+        iniciarTabuleiro()
+        
+        jogador_um = new Jogador(parseInt(form.tipo_peca.value), isHumanoIniciaJogo, 1)
+        jogador_dois = new Jogador((parseInt(form.tipo_peca.value) == 1 ? 2 : 1), !isHumanoIniciaJogo, 2)
+        
+        controller.setJogadores = [jogador_um, jogador_dois]
+
+        document.getElementById('botao_iniciar').innerHTML = 'Reiniciar'
+        
+        setLabelJogador()
+
+        if(controller.getJogadorVez.getTipoJogador === TIPO_JOGADOR_IA){
+            IAJogar()
+        }
+
+    }else{
+        reiniciarJogo()
+    }
 }
 
 function itemSelecionado(item){
     let id_item = parseInt(item.id)
-    if(!controller.hasItemJaContemPeca(id_item)){
+    if(isJogoIniciado){
+
         let jogador = controller.getJogadorVez
         let src_image = jogador.tipo_peca == TIPO_PECA_X ? 'img/icon-x.png' : 'img/icon-o.png'
         let id_peca = controller.getPecas.length + 1
         let peca = new Peca(id_peca, src_image, jogador)
         let element_image = document.createElement('img')
-        controller.addPeca(peca)
-        
-        element_image.setAttribute('src', src_image)
-        element_image.setAttribute('width', '50')
-        element_image.setAttribute('height', '50')
-        document.getElementById(item.id).appendChild(element_image)
+        let hasTemVitoria = controller.hasVitoria()
+        let hasTemEmpate = controller.hasEmpate()
+        let isJogoFinalizado = hasTemVitoria || hasTemEmpate
 
+        if(!isJogoFinalizado){
+            if(!controller.hasItemJaContemPeca(id_item)){
+                controller.addPeca(peca)
+                
+                element_image.setAttribute('src', src_image)
+                document.getElementById(item.id).appendChild(element_image)
 
-        controller.getItemId(id_item).setPeca = peca
-        
-        if(!controller.hasVitoria()){
-            if(!controller.hasEmpate()){
-                alterarVezJogador()
-            }else{
-                setLabelEmpate()
+                controller.getItemId(id_item).setPeca = peca
+                
+                if(!controller.hasVitoria() && !controller.hasEmpate()){
+                    alterarVezJogador()
+                }else if(controller.hasVitoria()){
+                    setLabelVitoria()
+                }else if(controller.hasEmpate()){
+                    setLabelEmpate()
+                }
             }
-        }else{
-            setLabelVitoria()
         }
     }
 }
 
 function setLabelVitoria(){
-    document.getElementById('labelResultado').innerHTML = 'Vitória'
-    document.getElementById('labelJogadorResultado').innerHTML = controller.getJogadorVez.getNome
+    document.getElementById('label').innerHTML = controller.getJogadorVez.getTipoPeca == TIPO_PECA_X ? 'Vencedor: X' : 'Vencedor: O'
 }
 
 function setLabelEmpate(){
-    document.getElementById('labelResultado').innerHTML = 'Empate'
-    document.getElementById('labelJogadorResultado').innerHTML = 'Ninguém ganhou'
+    document.getElementById('label').innerHTML = 'Empate'
 }
 
 function setLabelJogador(){
-    document.getElementById('label').innerHTML = 'Vez jogador: ' + controller.getJogadorVez.getNome
+    document.getElementById('label').innerHTML = controller.getJogadorVez.getTipoPeca == TIPO_PECA_X ? 'Vez de: X' : 'Vez de : O'
 }
 
 function alterarVezJogador(){
@@ -126,14 +132,10 @@ function IAJogar(){
 }
 
 function reiniciarJogo(){
-
-    document.getElementById('formJogador').style.display = 'flex';
-    document.getElementById('divJogo').style.display = 'none';
-    
-    document.getElementById('labelResultado').innerHTML = ''
-    document.getElementById('labelJogadorResultado').innerHTML = ''
-
-    document.formulario.nome.value = ''
-
-
+    isJogoIniciado = false
+    document.getElementById('botao_iniciar').innerHTML = 'Iniciar';
+    document.getElementById('label').innerHTML = ''
+    if(document.getElementById('tabuleiro') !== null){
+        document.getElementById('tabuleiro').remove()
+    }
 }

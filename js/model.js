@@ -8,11 +8,43 @@ const POSICOES_VITORIA = [
     [1,2,3],
     [4,5,6],
     [7,8,9],
+    [3,2,1],
+    [6,5,4],
+    [9,8,7],
+    [2,3,1],
+    [5,6,4],
+    [8,9,7],
+    [2,1,3],
+    [5,4,6],
+    [8,7,9],
+    [1,3,2],
+    [4,6,5],
+    [7,9,8],
     [1,4,7],
     [2,5,8],
     [3,6,9],
+    [7,4,1],
+    [8,5,2],
+    [9,6,3],
+    [4,1,7],
+    [5,2,8],
+    [6,3,9],
+    [4,7,1],
+    [5,8,2],
+    [6,9,3],
+    [1,7,4],
+    [2,8,5],
+    [3,9,6],
     [1,5,9],
-    [3,5,7]
+    [3,5,7],
+    [9,5,1],
+    [7,5,3],
+    [5,1,9],
+    [5,3,7],
+    [5,9,1],
+    [5,7,3],
+    [1,9,5],
+    [3,7,5],
 ]
 
 class Item {
@@ -51,14 +83,11 @@ class Peca {
 }
 
 class Jogador {
-    constructor(nome, tipo_peca, vez_jogar, tipo_jogador){
-        this.nome = nome
+    constructor(tipo_peca, vez_jogar, tipo_jogador){
         this.tipo_peca = tipo_peca
         this.vez_jogar = vez_jogar
         this.tipo_jogador = tipo_jogador
     }
-
-    get getNome(){ return this.nome }
 
     get getTipoPeca(){ return this.tipo_peca }
 
@@ -86,14 +115,14 @@ class Controller {
         return this.itens
     }
 
-    set setLinhasTabuleiro(linhas){
-        this.linhas = linhas
-    }
-
     get getJogadores(){ return this.jogadores }
 
     get getJogadorVez(){ 
         return this.jogadores.find(element => element.isVezJogar)
+    }
+
+    set setLinhasTabuleiro(linhas){
+        this.linhas = linhas
     }
 
     set setJogadores(jogadores){
@@ -115,6 +144,7 @@ class Controller {
         let item;
 
         for(let posicoes of POSICOES_VITORIA){
+            contador = 0
             for(let i=0; i<posicoes.length; i++){
                 item = this.getItemId(posicoes[i])
                 if(item.hasPeca){
@@ -192,6 +222,7 @@ class Controller {
         let max = 9;
 
         for(let posicoes of POSICOES_VITORIA.reverse()){
+            contador = 0
             for(let i=0; i<posicoes.length; i++){
                 if(id < 0){
                     item = this.getItemId(posicoes[i])
@@ -199,8 +230,6 @@ class Controller {
                         if(item.hasPeca){
                             if(item.getPeca.getJogador.getTipoJogador == TIPO_JOGADOR_HUMANO){
                                 contador++
-                            }else{
-                                contador = 0
                             }
                         }else{
                             contador = 0
