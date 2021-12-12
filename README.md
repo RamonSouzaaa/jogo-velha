@@ -1,5 +1,5 @@
 <h1>Olá 👋, tudo bem?</h1>
-<p>Esse projeto foi criado para que eu pudesse treinar meu conhecimento com desenvolvimento Javascript utilizando a criação de classes e uso de getters e setters.
+<p>Esse projeto foi criado para que eu pudesse treinar meus conhecimento com desenvolvimento Javascript utilizando a criação de classes e uso de getters e setters.
 Logo abaixo a imagem demonstra como ficou o jogo.</p>
 
 ##
